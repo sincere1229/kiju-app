@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九星気学鑑定 | Twinkle Star Oracle</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0e1a;
+    --navy2: #0f1628;
+    --navy3: #1a2040;
+    --gold: #c9a84c;
+    --gold2: #e8c97a;
+    --gold3: #f5e0a0;
+    --white: #f0eadc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--navy);
+    color: var(--white);
+    font-family: 'Noto Serif JP', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(100,80,200,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(180,140,60,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 80%, rgba(60,80,180,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--dur) ease-in-out infinite; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  .container { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  .header { text-align: center; margin-bottom: 50px; animation: fadeDown 0.8s ease both; }
+  .site-name { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; opacity: 0.8; }
+  .title { font-family: 'Cinzel', serif; font-size: clamp(26px, 6vw, 38px); color: var(--gold2); letter-spacing: 3px; margin-bottom: 10px; text-shadow: 0 0 30px rgba(201,168,76,0.3); }
+  .subtitle { font-size: 13px; color: rgba(240,234,220,0.5); letter-spacing: 2px; }
+  .divider { width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 20px auto; }
+
+  .card { background: linear-gradient(135deg, rgba(26,32,64,0.9), rgba(15,22,40,0.95)); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 40px 36px; margin-bottom: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.1); animation: fadeUp 0.8s ease 0.2s both; }
+  .card-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 28px; text-align: center; }
+  .form-group { margin-bottom: 24px; }
+  label { display: block; font-size: 12px; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px; }
+
+  input[type="date"] { width: 100%; background: rgba(10,14,26,0.6); border: 1px solid rgba(201,168,76,0.25); border-radius: 8px; padding: 14px 18px; color: var(--white); font-family: 'Noto Serif JP', serif; font-size: 15px; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
+  input[type="date"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7) sepia(1) saturate(3) hue-rotate(5deg); cursor: pointer; }
+
+  .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #8a6a20, var(--gold), #8a6a20); background-size: 200% 100%; border: none; border-radius: 8px; color: var(--navy); font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; letter-spacing: 3px; cursor: pointer; transition: all 0.4s ease; text-transform: uppercase; margin-top: 8px; }
+  .btn:hover { background-position: 100% 0; box-shadow: 0 8px 30px rgba(201,168,76,0.35); transform: translateY(-1px); }
+
+  #result { display: none; animation: fadeUp 0.6s ease both; }
+
+  /* 九星カード */
+  .star-card { background: linear-gradient(135deg, rgba(26,32,64,0.95), rgba(15,22,40,0.98)); border: 1px solid rgba(201,168,76,0.35); border-radius: 16px; padding: 40px 36px; text-align: center; margin-bottom: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
+  .star-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(ellipse at center, rgba(201,168,76,0.04) 0%, transparent 60%); pointer-events: none; }
+
+  .star-label { font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; opacity: 0.8; }
+
+  .star-symbol { font-size: clamp(60px, 15vw, 90px); margin-bottom: 16px; animation: float 4s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  .star-number { font-family: 'Cinzel', serif; font-size: clamp(18px, 4vw, 24px); color: var(--gold2); letter-spacing: 3px; margin-bottom: 6px; }
+  .star-element { font-size: 13px; color: rgba(240,234,220,0.55); letter-spacing: 2px; margin-bottom: 4px; }
+  .star-direction { font-size: 12px; color: var(--gold); letter-spacing: 2px; opacity: 0.7; }
+
+  .section { background: linear-gradient(135deg, rgba(26,32,64,0.9), rgba(15,22,40,0.95)); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 36px; margin-bottom: 20px; }
+  .section-title { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(201,168,76,0.15); }
+  .section-text { font-size: 14px; line-height: 2; color: rgba(240,234,220,0.85); }
+  .trait-list { list-style: none; margin-top: 16px; }
+  .trait-list li { padding: 10px 0; border-bottom: 1px solid rgba(201,168,76,0.08); font-size: 14px; color: rgba(240,234,220,0.85); display: flex; align-items: center; gap: 10px; }
+  .trait-list li::before { content: '✦'; color: var(--gold); font-size: 10px; flex-shrink: 0; }
+
+  /* 吉方位グリッド */
+  .direction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+  .dir-cell { background: rgba(10,14,26,0.5); border: 1px solid rgba(201,168,76,0.12); border-radius: 8px; padding: 12px 8px; text-align: center; font-size: 12px; }
+  .dir-cell.good { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.08); }
+  .dir-name { color: var(--gold2); font-size: 15px; margin-bottom: 4px; }
+  .dir-label { color: rgba(240,234,220,0.5); font-size: 10px; letter-spacing: 1px; }
+
+  /* 有料ブロック */
+  .premium-block { background: linear-gradient(135deg, rgba(26,32,64,0.9), rgba(15,22,40,0.95)); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; margin-bottom: 20px; overflow: hidden; position: relative; }
+  .premium-header { padding: 20px 36px; border-bottom: 1px solid rgba(201,168,76,0.1); font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold); letter-spacing: 3px; display: flex; align-items: center; gap: 10px; }
+  .premium-badge { background: linear-gradient(135deg, var(--gold), #8a6a20); color: var(--navy); font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px; }
+  .premium-preview { padding: 24px 36px; position: relative; }
+  .preview-text { font-size: 14px; line-height: 2; color: rgba(240,234,220,0.4); filter: blur(4px); user-select: none; pointer-events: none; }
+  .premium-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, rgba(10,14,26,0.92) 60%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 24px; }
+  .unlock-btn { background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05)); border: 1px solid rgba(201,168,76,0.5); border-radius: 8px; color: var(--gold2); font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; padding: 12px 28px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+  .unlock-btn:hover { background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(201,168,76,0.1)); border-color: var(--gold); box-shadow: 0 4px 20px rgba(201,168,76,0.2); }
+
+  /* 総合鑑定バナー */
+  .bundle-banner { background: linear-gradient(135deg, rgba(100,80,30,0.3), rgba(60,40,10,0.4)); border: 1px solid rgba(201,168,76,0.4); border-radius: 16px; padding: 36px; text-align: center; margin-bottom: 30px; }
+  .bundle-title { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold2); letter-spacing: 3px; margin-bottom: 12px; }
+  .bundle-desc { font-size: 13px; color: rgba(240,234,220,0.6); line-height: 1.8; margin-bottom: 20px; }
+  .bundle-price { font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold); margin-bottom: 20px; }
+  .bundle-price span { font-size: 12px; color: rgba(240,234,220,0.5); }
+  .bundle-btn { display: inline-block; background: linear-gradient(135deg, #8a6a20, var(--gold), #8a6a20); background-size: 200% 100%; border-radius: 8px; color: var(--navy); font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; padding: 14px 36px; text-decoration: none; transition: all 0.4s ease; cursor: pointer; border: none; }
+  .bundle-btn:hover { background-position: 100% 0; box-shadow: 0 8px 30px rgba(201,168,76,0.4); transform: translateY(-1px); }
+
+  .footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid rgba(201,168,76,0.1); }
+  .footer-logo { font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold); letter-spacing: 4px; opacity: 0.5; margin-bottom: 8px; }
+  .footer-text { font-size: 11px; color: rgba(240,234,220,0.25); letter-spacing: 1px; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 480px) {
+    .card, .section, .star-card, .premium-block, .bundle-banner { padding: 28px 20px; }
+    .premium-header, .premium-preview { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+
+  <header class="header">
+    <div class="site-name">✦ Twinkle Star Oracle ✦</div>
+    <h1 class="title">九星気学鑑定</h1>
+    <div class="divider"></div>
+    <p class="subtitle">Nine Star Ki Reading</p>
+  </header>
+
+  <div class="card">
+    <div class="card-title">✦ 生年月日を入力 ✦</div>
+    <div class="form-group">
+      <label>生年月日</label>
+      <input type="date" id="birthdate" />
+    </div>
+    <button class="btn" onclick="calculate()">✦ 鑑定する ✦</button>
+  </div>
+
+  <div id="result">
+
+    <div class="star-card">
+      <div class="star-label">Your Nine Star</div>
+      <div class="star-symbol" id="star-symbol">☵</div>
+      <div class="star-number" id="star-number">一白水星</div>
+      <div class="star-element" id="star-element">五行：水</div>
+      <div class="star-direction" id="star-direction">本命方位：北</div>
+    </div>
+
+    <!-- 無料：基本性格 -->
+    <div class="section">
+      <div class="section-title">✦ 基本的な性格</div>
+      <p class="section-text" id="basic-desc"></p>
+      <ul class="trait-list" id="trait-list"></ul>
+    </div>
+
+    <!-- 無料：吉方位 -->
+    <div class="section">
+      <div class="section-title">✦ 今年の吉方位</div>
+      <p class="section-text" style="margin-bottom:12px; font-size:13px; color:rgba(240,234,220,0.6);">吉方位への移動・旅行が開運につながります</p>
+      <div class="direction-grid" id="direction-grid"></div>
+    </div>
+
+    <!-- 有料：詳細運勢 -->
+    <div class="premium-block">
+      <div class="premium-header">
+        ✦ 今年の詳細運勢（月別）
+        <span class="premium-badge">PREMIUM</span>
+      </div>
+      <div class="premium-preview">
+        <p class="preview-text">月ごとの運気の流れと、特に注意すべき月・飛躍できる月を詳しく解説。仕事・恋愛・健康それぞれの観点から...</p>
+        <div class="premium-overlay">
+          <a href="#" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 有料：相性 -->
+    <div class="premium-block">
+      <div class="premium-header">
+        ✦ 九星別・相性鑑定
+        <span class="premium-badge">PREMIUM</span>
+      </div>
+      <div class="premium-preview">
+        <p class="preview-text">9つの星それぞれとの相性を詳細に解説。相性の良い星・難しい星との付き合い方と、関係を深めるコツを...</p>
+        <div class="premium-overlay">
+          <a href="#" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 有料：開運アドバイス -->
+    <div class="premium-block">
+      <div class="premium-header">
+        ✦ パーソナル開運アドバイス
+        <span class="premium-badge">PREMIUM</span>
+      </div>
+      <div class="premium-preview">
+        <p class="preview-text">あなたの星に合わせたラッキーカラー・ラッキーアイテム・開運行動を詳しくお伝えします。日常に取り入れることで...</p>
+        <div class="premium-overlay">
+          <a href="#" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bundle-banner">
+      <div class="bundle-title">✦ 総合鑑定パック ✦</div>
+      <p class="bundle-desc">数秘術 ＋ 九星気学 ＋ タロット<br>3つの視点からあなたの運命を深く読み解きます</p>
+      <div class="bundle-price">¥1,980 <span>（通常 ¥3,000）</span></div>
+      <button class="bundle-btn">✦ 総合鑑定を申し込む ✦</button>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo">✦ TWINKLE STAR ORACLE ✦</div>
+    <p class="footer-text">© 2024 Twinkle Lab. All rights reserved.</p>
+  </footer>
+
+</div>
+
+<script>
+// 星生成
+(function() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    star.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${Math.random()*4+2}s;animation-delay:${Math.random()*4}s;opacity:${Math.random()*0.5+0.1};`;
+    container.appendChild(star);
+  }
+})();
+
+const nineStarData = {
+  1: {
+    name: '一白水星', symbol: '☵', element: '水', direction: '北',
+    color: '#6ab8e8',
+    basic: '一白水星の方は、深い思慮と柔軟な適応力を持つ知性派です。水のように状況に応じて形を変え、どんな環境にも馴染む力があります。内面は情熱的で、秘めた感受性と芸術的なセンスを持ち合わせています。',
+    traits: ['深い洞察力と観察眼', '柔軟な適応力と社交性', '豊かな感受性と芸術センス', '粘り強く物事をやり遂げる力'],
+    directions: [
+      { name: '北', label: '本命方位', good: true },
+      { name: '南西', label: '吉方位', good: true },
+      { name: '東', label: '吉方位', good: true },
+      { name: '南', label: '普通', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '北西', label: '注意', good: false },
+      { name: '西', label: '普通', good: false },
+      { name: '北東', label: '注意', good: false },
+      { name: '南東', label: '普通', good: false },
+    ]
+  },
+  2: {
+    name: '二黒土星', symbol: '☷', element: '土', direction: '南西',
+    basic: '二黒土星の方は、誠実さと勤勉さを兼ね備えた大地のような存在です。コツコツと努力を重ね、周囲から厚い信頼を得ます。母のような包容力と面倒見の良さで、人々を支える縁の下の力持ちです。',
+    traits: ['誠実で堅実な性格', '高い忍耐力と持続力', '面倒見が良く思いやり深い', '着実に積み上げる努力家'],
+    directions: [
+      { name: '南西', label: '本命方位', good: true },
+      { name: '北東', label: '吉方位', good: true },
+      { name: '南', label: '吉方位', good: true },
+      { name: '北', label: '普通', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '東', label: '注意', good: false },
+      { name: '西', label: '普通', good: false },
+      { name: '北西', label: '普通', good: false },
+      { name: '南東', label: '注意', good: false },
+    ]
+  },
+  3: {
+    name: '三碧木星', symbol: '☳', element: '木（陽）', direction: '東',
+    basic: '三碧木星の方は、若々しいエネルギーと行動力にあふれる先駆者です。直感と閃きが鋭く、新しいことへの挑戦を楽しみます。明るく社交的で、その活気あるエネルギーが周囲を元気づけます。',
+    traits: ['旺盛な行動力と決断の速さ', '優れた直感と創造力', '明るく積極的な社交性', '新しいことへの強い好奇心'],
+    directions: [
+      { name: '東', label: '本命方位', good: true },
+      { name: '南', label: '吉方位', good: true },
+      { name: '北', label: '吉方位', good: true },
+      { name: '西', label: '注意', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '南西', label: '注意', good: false },
+      { name: '北東', label: '普通', good: false },
+      { name: '北西', label: '普通', good: false },
+      { name: '南東', label: '普通', good: false },
+    ]
+  },
+  4: {
+    name: '四緑木星', symbol: '☴', element: '木（陰）', direction: '南東',
+    basic: '四緑木星の方は、温和で協調性が高く、人との縁を大切にする平和主義者です。風のように広い人脈を持ち、コミュニケーション能力に優れています。信頼と誠意を大切にし、長期的な関係を築きます。',
+    traits: ['優れたコミュニケーション力', '広い人脈と縁をつなぐ力', '温和で協調性が高い', '誠実さと信頼感'],
+    directions: [
+      { name: '南東', label: '本命方位', good: true },
+      { name: '東', label: '吉方位', good: true },
+      { name: '南', label: '吉方位', good: true },
+      { name: '北西', label: '注意', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '西', label: '普通', good: false },
+      { name: '北', label: '普通', good: false },
+      { name: '北東', label: '普通', good: false },
+      { name: '南西', label: '注意', good: false },
+    ]
+  },
+  5: {
+    name: '五黄土星', symbol: '⊕', element: '土（中心）', direction: '中央',
+    basic: '五黄土星の方は、強烈な存在感と圧倒的なエネルギーを持つ帝王の星です。中心的存在として周囲を引きつけ、強い意志と実行力で大きな成果を生み出します。その力は善にも悪にも大きく働きます。',
+    traits: ['圧倒的な存在感と影響力', '強い意志と実行力', '中心的リーダーシップ', '大きなことを成し遂げる力'],
+    directions: [
+      { name: '南', label: '吉方位', good: true },
+      { name: '北', label: '吉方位', good: true },
+      { name: '東', label: '吉方位', good: true },
+      { name: '西', label: '吉方位', good: true },
+      { name: '中央', label: '本命', good: false },
+      { name: '南西', label: '注意', good: false },
+      { name: '北東', label: '注意', good: false },
+      { name: '北西', label: '注意', good: false },
+      { name: '南東', label: '注意', good: false },
+    ]
+  },
+  6: {
+    name: '六白金星', symbol: '☰', element: '金（陽）', direction: '北西',
+    basic: '六白金星の方は、高い理想と強いプライドを持つ天のリーダーです。責任感が強く、完璧を目指す姿勢で周囲から尊敬を集めます。決断力と統率力があり、大きなプロジェクトを率いる力を持ちます。',
+    traits: ['高い理想と強いリーダーシップ', '責任感と完璧主義', '優れた決断力と統率力', '品格と威厳のある存在感'],
+    directions: [
+      { name: '北西', label: '本命方位', good: true },
+      { name: '西', label: '吉方位', good: true },
+      { name: '南西', label: '吉方位', good: true },
+      { name: '東', label: '注意', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '南東', label: '注意', good: false },
+      { name: '南', label: '普通', good: false },
+      { name: '北', label: '普通', good: false },
+      { name: '北東', label: '普通', good: false },
+    ]
+  },
+  7: {
+    name: '七赤金星', symbol: '☱', element: '金（陰）', direction: '西',
+    basic: '七赤金星の方は、社交的で魅力的な喜びの星です。ユーモアセンスと話術に優れ、その場を明るく盛り上げる才能があります。楽しいことへの感度が高く、人を喜ばせることに天性の才能を持ちます。',
+    traits: ['優れた話術と社交センス', '明るく場を和ませる魅力', 'ユーモアと遊び心', '金銭感覚と交渉力の高さ'],
+    directions: [
+      { name: '西', label: '本命方位', good: true },
+      { name: '北西', label: '吉方位', good: true },
+      { name: '南西', label: '吉方位', good: true },
+      { name: '東', label: '注意', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '南東', label: '注意', good: false },
+      { name: '南', label: '普通', good: false },
+      { name: '北', label: '普通', good: false },
+      { name: '北東', label: '普通', good: false },
+    ]
+  },
+  8: {
+    name: '八白土星', symbol: '☶', element: '土（変化）', direction: '北東',
+    basic: '八白土星の方は、変化と革新を司る山の星です。粘り強い努力と変革への意欲を持ち、困難を乗り越えるたびに大きく成長します。蓄積と変化のタイミングをつかむ才能で、晩年に大きな成功を収めます。',
+    traits: ['強い粘り強さと忍耐力', '変化・革新への対応力', '着実な蓄積と成長力', 'タイミングをつかむ直感'],
+    directions: [
+      { name: '北東', label: '本命方位', good: true },
+      { name: '南西', label: '吉方位', good: true },
+      { name: '北西', label: '吉方位', good: true },
+      { name: '東', label: '注意', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '南東', label: '注意', good: false },
+      { name: '南', label: '普通', good: false },
+      { name: '北', label: '普通', good: false },
+      { name: '西', label: '普通', good: false },
+    ]
+  },
+  9: {
+    name: '九紫火星', symbol: '☲', element: '火', direction: '南',
+    basic: '九紫火星の方は、輝く知性と美的センスを持つ太陽の星です。直感が鋭く、物事の本質を瞬時に見抜きます。華やかな存在感と表現力で注目を集め、文化・芸術・精神的な分野で才能を発揮します。',
+    traits: ['鋭い直感と洞察力', '華やかな存在感と表現力', '優れた美的センスと知性', '情熱的でカリスマ的な魅力'],
+    directions: [
+      { name: '南', label: '本命方位', good: true },
+      { name: '東', label: '吉方位', good: true },
+      { name: '南東', label: '吉方位', good: true },
+      { name: '北', label: '注意', good: false },
+      { name: '中央', label: '普通', good: false },
+      { name: '北西', label: '注意', good: false },
+      { name: '西', label: '普通', good: false },
+      { name: '北東', label: '普通', good: false },
+      { name: '南西', label: '普通', good: false },
+    ]
+  }
+};
+
+function getKijuStar(year, month) {
+  // 節入り（2月4日）前は前年扱い
+  const baseYear = month <= 1 ? year - 1 : year;
+  const remainder = (11 - (baseYear % 9)) % 9;
+  return remainder === 0 ? 9 : remainder;
+}
+
+function calculate() {
+  const birthdate = document.getElementById('birthdate').value;
+  if (!birthdate) { alert('生年月日を入力してください'); return; }
+
+  const [year, month, day] = birthdate.split('-').map(Number);
+  // 節入り考慮（簡易：2月4日前は前年）
+  const adjustedMonth = (month === 2 && day < 4) ? 1 : month;
+  const starNum = getKijuStar(year, adjustedMonth);
+  const data = nineStarData[starNum];
+
+  document.getElementById('star-symbol').textContent = data.symbol;
+  document.getElementById('star-number').textContent = data.name;
+  document.getElementById('star-element').textContent = '五行：' + data.element;
+  document.getElementById('star-direction').textContent = '本命方位：' + data.direction;
+
+  document.getElementById('basic-desc').textContent = data.basic;
+
+  const traitList = document.getElementById('trait-list');
+  traitList.innerHTML = data.traits.map(t => `<li>${t}</li>`).join('');
+
+  const dirGrid = document.getElementById('direction-grid');
+  dirGrid.innerHTML = data.directions.map(d => `
+    <div class="dir-cell ${d.good ? 'good' : ''}">
+      <div class="dir-name">${d.name}</div>
+      <div class="dir-label">${d.label}</div>
+    </div>
+  `).join('');
+
+  const result = document.getElementById('result');
+  result.style.display = 'block';
+  result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
