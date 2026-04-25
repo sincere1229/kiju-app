@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -162,7 +163,7 @@
     <!-- 無料：基本性格 -->
     <div class="section">
       <div class="section-title">✦ 基本的な性格</div>
-      <p class="section-text" id="basic-desc"></p>
+      <p class="section-text" id="basic-desc"></p><div style="position:relative;margin-top:12px;"><p class="section-text" id="basic-desc-blur" style="filter:blur(5px);user-select:none;pointer-events:none;opacity:0.5;"></p><div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 0%,rgba(10,14,26,0.97) 50%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px;"><a href="https://lin.ee/XHDFrA8" target="_blank" style="background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.5);border-radius:8px;color:#e8c97a;font-family:Cinzel,serif;font-size:12px;letter-spacing:2px;padding:12px 24px;text-decoration:none;display:inline-block;">✦ 続きをLINEで受け取る（無料）</a></div></div>
       <ul class="trait-list" id="trait-list"></ul>
     </div>
 
@@ -182,7 +183,7 @@
       <div class="premium-preview">
         <p class="preview-text">月ごとの運気の流れと、特に注意すべき月・飛躍できる月を詳しく解説。仕事・恋愛・健康それぞれの観点から...</p>
         <div class="premium-overlay">
-          <a href="#" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
+          <a href="https://lin.ee/XHDFrA8" target="_blank" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
         </div>
       </div>
     </div>
@@ -196,7 +197,7 @@
       <div class="premium-preview">
         <p class="preview-text">9つの星それぞれとの相性を詳細に解説。相性の良い星・難しい星との付き合い方と、関係を深めるコツを...</p>
         <div class="premium-overlay">
-          <a href="#" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
+          <a href="https://lin.ee/XHDFrA8" target="_blank" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
         </div>
       </div>
     </div>
@@ -210,7 +211,7 @@
       <div class="premium-preview">
         <p class="preview-text">あなたの星に合わせたラッキーカラー・ラッキーアイテム・開運行動を詳しくお伝えします。日常に取り入れることで...</p>
         <div class="premium-overlay">
-          <a href="#" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
+          <a href="https://lin.ee/XHDFrA8" target="_blank" class="unlock-btn">✦ 詳細鑑定を見る（¥500）</a>
         </div>
       </div>
     </div>
@@ -219,7 +220,7 @@
       <div class="bundle-title">✦ 総合鑑定パック ✦</div>
       <p class="bundle-desc">数秘術 ＋ 九星気学 ＋ タロット<br>3つの視点からあなたの運命を深く読み解きます</p>
       <div class="bundle-price">¥1,980 <span>（通常 ¥3,000）</span></div>
-      <button class="bundle-btn">✦ 総合鑑定を申し込む ✦</button>
+      <a href="https://lin.ee/XHDFrA8" target="_blank" class="bundle-btn">✦ 総合鑑定を申し込む ✦</a>
     </div>
 
   </div>
@@ -414,7 +415,7 @@ function calculate() {
   document.getElementById('star-element').textContent = '五行：' + data.element;
   document.getElementById('star-direction').textContent = '本命方位：' + data.direction;
 
-  document.getElementById('basic-desc').textContent = data.basic;
+  var half = Math.floor(data.basic.length/2); document.getElementById('basic-desc').textContent = data.basic.substring(0,half); document.getElementById('basic-desc-blur').textContent = data.basic.substring(half);
 
   const traitList = document.getElementById('trait-list');
   traitList.innerHTML = data.traits.map(t => `<li>${t}</li>`).join('');
